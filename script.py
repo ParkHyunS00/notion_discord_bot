@@ -3,10 +3,10 @@ import requests
 from notion_client import Client
 from datetime import datetime, timezone, timedelta
 from dateutil.parser import isoparse
-# from dotenv import load_dotenv, find_dotenv
+#from dotenv import load_dotenv, find_dotenv
 
 # 로컬 테스트용 .env 로드
-# load_dotenv(find_dotenv(), override=True)
+#load_dotenv(find_dotenv(), override=True)
 
 STATUS_EMOJI = {
     "제안됨": "💡",
@@ -23,6 +23,8 @@ def fetch_notion_data():
     return notion.databases.query(database_id=notion_database_id)
 
 def format_notion_data(pages: list[dict]):
+    kst = timezone(timedelta(hours=9))
+    today = datetime.now(kst).date()
     tasks = []
 
     for pg in pages:
@@ -33,16 +35,21 @@ def format_notion_data(pages: list[dict]):
         assignee = people[0]["name"] if people else "없음"
         date_prop = p["Due date"]["date"]
         due_str = date_prop["start"] if date_prop and date_prop.get("start") else None
+        due_dt = isoparse(due_str).date() if due_str else None
 
-        # 마감날짜가 없으면 먼 미래로 밀어버리기
-        due_dt = isoparse(due_str).date() if due_str else datetime.max.date()
+        # 완료됨 상태 필터링
+        if status == "완료됨":
+            if due_dt is None:
+                continue
+            if (today - due_dt).days >= 7:
+                continue
 
         tasks.append({
             "title": title,
             "status": status,
             "assignee": assignee,
             "due_str": due_str or "없음",
-            "due_dt": due_dt
+            "due_dt": due_dt or datetime.max.date() # 마감일이 없으면 먼 미래로 밀어버리기
         })
 
     return tasks    
