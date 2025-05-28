@@ -1,0 +1,30 @@
+name: "Weekly Meeting Reminder"
+
+on:
+  # 매주 금요일 06:20 UTC -> KST 15:20
+  schedule:
+    - cron: "20 6 * * 5"
+  # 수동 실행
+  workflow_dispatch:
+
+jobs:
+  send_weekly_meeting_message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dateutil
+
+      - name: Send weekly meeting reminder
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python weekly_meeting.py
