@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install notion-client requests python-dotenv python-dateutil
+          pip install notion-client requests python-dateutil
 
       - name: Run Notion to Discord script
         env:
