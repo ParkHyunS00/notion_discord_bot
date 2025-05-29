@@ -2,7 +2,8 @@ name: "평일 KST 10시 Notion → Discord"
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "50 9 * * 1-5"
+  workflow_dispatch:
 
 jobs:
   notify:
