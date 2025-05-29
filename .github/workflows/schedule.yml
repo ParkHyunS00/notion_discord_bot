@@ -1,9 +1,8 @@
 name: "평일 KST 10시 Notion → Discord"
 
 on:
-  # 테스트용: 매분마다 실행 (모든 요일)
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"
 
 jobs:
   notify:
