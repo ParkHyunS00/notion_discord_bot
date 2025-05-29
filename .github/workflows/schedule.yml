@@ -4,8 +4,6 @@ on:
   # 테스트용: 매분마다 실행 (모든 요일)
   schedule:
     - cron: "* * * * *"
-  # 수동 실행
-  workflow_dispatch:
 
 jobs:
   notify:
